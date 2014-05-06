@@ -14,7 +14,7 @@ class crud{
 		 }
 		
 		
-		 public function get ( $table , $conds = array() , $limit = 0 , $offset = 0 , $order = array('id'=>'desc')  ){
+		 public function get ( $table , $conds = array() , $limit = 0 , $offset = 0 , $order = array()  ){
 
 			$sql = "SELECT * from `$table` WHERE 1=1 ";	
 			if(!empty($conds))
