@@ -16,46 +16,32 @@ class crud{
 		
 		 public function get ( $table , $conds = array() , $limit = 0 , $offset = 0 , $order = array()  ){
 
-			$sql = "SELECT * from `$table` WHERE 1=1 ";	
-			if(!empty($conds))
-			foreach($conds as $k=>$v)
-			{
-				$sql .= " && $k= '$v' ";
-			}
-			 
-			 if(!empty($order))
-			 {
-				 $sql .=" order by ";
-				 $o = array();
-				 foreach($order as $k=>$v)
-				 {
-					 $o[] = " $k $v " ; 
-				 }
-                 $sql .= implode( ',' , $o );
-			 }
-			
+			$sql = "SELECT * from `$table` ";
+			$sql .= $this->condition($conds);	
+			$sql .= $this->order($order);	
 			if($limit != 0 )
 			 $sql .=" LIMIT $limit OFFSET $offset ";
 			 
 			
-            $this->last_query = $sql;
+           echo  $this->last_query = $sql;
+		   
+		   echo '<br />';
 			$records = $this->db->query($sql);
 
 			return $this->return_objrct_array($records);
-		}		
+		}
+		
+		
+		
 
 
 		
 	
 
 		 public function delete ( $table  ,  $conds = array() ){
-			$sql = "delete from `$table` WHERE 1=1 ";	
-			if(!empty($conds))
-			foreach($conds as $k=>$v)
-			{
-				$sql .= " && $k= '$v' ";
-			}
-			 
+			$sql  = "delete from `$table`  ";	
+			$sql .= $this->condition($conds);	
+
 			 $this->last_query = $sql ;
 			 $this->db->query($sql);
 			 $this->affected_rows = $this->db->affected_rows();
@@ -93,7 +79,7 @@ class crud{
 		}		
 
 
-		 public function edit ( $table , $data = array() , $cond = array() ){
+		 public function edit ( $table , $data = array() , $conds = array() ){
 			
 			if(empty($data)) return false;
 			
@@ -105,13 +91,8 @@ class crud{
 				  $edit[] = " `$k` = '$v' ";
 				}
 				$sql .= implode(',' , $edit);
-				
-				$sql .=" WHERE 1  ";
-				if(!empty($cond))
-				foreach($cond as $k=>$v)
-				{
-				  $sql .= " && `$k` = '$v'  ";
-				}
+			    $sql .= $this->condition($conds);	
+
 				$this->last_query = $sql;
 				$this->db->query($sql);
 			    $this->affected_rows = $this->db->affected_rows();
@@ -119,7 +100,7 @@ class crud{
 
 
 
-   function get_join(  $tbl = ''  , $join = array() ,   $cond = array() , $select = array() , $limit = 0  , $offset = 0 , $order=array()){
+   function get_join(  $tbl = ''  , $join = array() ,   $conds = array() , $select = array() , $limit = 0  , $offset = 0 , $order=array()){
         
 		
 		if(!empty($select))
@@ -135,23 +116,8 @@ class crud{
 			$sql .= " JOIN $join[0] , $join[1] .'='.$join[2] , $join_type ";
 		}
 		
-		$sql .= " where 1 ";
-		if(!empty($cond))
-		{
-			foreach($cond as $k=>$v)
-			$sql .= " , $k = $v ";
-		}
-
-		 if(!empty($order))
-		 {
-			 $sql .=" order by ";
-			 $o = array();
-			 foreach($order as $k=>$v)
-			 {
-				 $o[] = " $k $v " ; 
-			 }
-			 $sql .= implode( ',' , $o );
-		 }
+		$sql .= $this->condition($conds);	
+		$sql .= $this->order($order);	
 		
 		if($limit != 0 )
 		 $sql .=" LIMIT $limit OFFSET $offset ";
@@ -173,14 +139,10 @@ class crud{
 		}	
 		
 		
-		 function increment( $tbl , $cond = array(), $upfild = '' , $value = 1)
+		 function increment( $tbl , $conds = array(), $upfild = '' , $value = 1)
 		{
-				$sql = " update $tbl set $upfild = $upfild +1 where 1 ";
-				if(!empty($cond))
-				foreach($cond as $k=>$v)
-				{
-				  $sql .= " && `$k` = '$v'  ";
-				}
+				$sql = " update $tbl set $upfild = $upfild +1  ";
+			    $sql .= $this->condition($conds);	
 				
 				$this->last_query = $sql;
 				$this->db->query($sql);
@@ -216,6 +178,100 @@ class crud{
 		}
 	
 	
+	
+		function condition( $conds ){
+			if(empty($conds)) return '';
+			
+            $cond = ' WHERE ';
+			$cntr = 0 ;
+
+			foreach($conds as $k=>$v)
+			{
+				$cntr++;
+				$operatpr = "=";
+				$type = $cntr == 1 ? '' : "&&";
+				$prt  = false ;
+				
+				if(is_array($v))
+				{
+					 
+					 foreach($v as $kk=>$vv  )
+					 {
+						 $vv = trim($vv);
+						 if(in_array($vv , array('&&' , '||' , 'and' , 'or' , 'AND' , 'OR')))
+						 {
+							$type = $vv ;
+							unset($v[$kk]); 
+						 }
+						 else if(in_array($vv , array('=' ,'!=' , '>' , '<' , 'like' , 'LIKE'  , 'BETWEEN', 'between')))
+						 {
+							$operatpr = $vv ;
+							unset($v[$kk]); 
+						 }
+						 else if(in_array($vv , array('(', ')')))
+						 {
+							 if($vv == '(')
+							 $prt = 'o' ;
+							 else if($vv == ')')
+							 $prt = 'c' ;
+							 unset($v[$kk]); 
+						 }
+						 
+					 }
+					 
+					 $v    = array_values($v);
+				     $type = $cntr == 1 ? '' : $type;
+					 
+					 
+					 $cond .= " $type ";
+					 
+					 if($prt && $prt == 'o' )
+					 $cond .= '(';
+					 
+					 if(count($v) > 1 )
+					 {
+						 if(in_array($operatpr  , array('BETWEEN', 'between')))
+						 {
+						   $cond .= "  $k $operatpr $v[0] AND $v[1] ";
+						 }
+						 else
+						 {
+						   $operatpr = $operatpr == '!=' ? 'NOT IN' : 'IN';
+						   $cond .= "  $k $operatpr (".implode( ',' ,  $v).")";
+						 }
+					 }
+					 else
+					 $cond .= " $k $operatpr '$v[0]' ";
+					 
+					 if($prt && $prt == 'c' )
+					 $cond .= ')';
+					 
+
+				}
+				else
+				$cond .= " $type $k = '$v' ";
+			}
+			return $cond ;
+		}
+		
+		
+		
+		function order( $order ){
+            $ord = '';
+			 if(!empty($order))
+			 {
+				 $ord .=" order by ";
+				 $o = array();
+				 foreach($order as $k=>$v)
+				 {
+					 $o[] = " $k $v " ; 
+				 }
+                 $ord .= implode( ',' , $o );
+			 }
+			
+			return $ord ;
+		}		
+		
 	
 		
 }

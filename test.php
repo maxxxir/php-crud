@@ -1,5 +1,4 @@
 <?php
-  
   require_once('crud.php');
   $c = new crud;
  //echo $c->insert('test' , array('title'=>'title' , 'name'=>'max'));
@@ -9,8 +8,12 @@
 // $c->increment('test' , array('id'=>3) , 'id');
 // echo $c->last_query;
 
- $res = $c->get('test' , array()  , 0 , 0 , array('id'=>'desc' , 'title'=>'desc'));
+ $res = $c->get('test' , array('id'=>array('!=' , '1')) , 0 , 0 , array('id'=>'desc' , 'title'=>'desc'));
+ echo $c->last_query;
  foreach($res as $obj )
- echo $obj->title ;
+ {
+	 echo '<br />';
+	 echo $obj->title ;
+ }
 
 ?>
