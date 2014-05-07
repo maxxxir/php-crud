@@ -88,7 +88,84 @@ this function will return the id of inserted user
 
 --------------------------------------------------------------------------------
 
+5 - advanced conditioning 
 
+  lets say you to get user with id = 1 
+  
+  $c->get('users' , array('id'=>1));
+  
+  by default this will generate 
+    
+	 && id = 1 
+	 
+  what if we want to change operator ? 
+  
+     $c->get('users' , array('id'=> array('!=' , '1' ));
+	 
+  this wil generate 
+	  
+	 && id != 1
+	 
+  note the order doesn't matter ! 
+  
+     array('id'=> array('!=' , '1' ) 
+     array('id'=> array( '1'  , '!=') 
+	 
+  will generate the same result and this goes for all examples  
+  
+  we can use any standard operators instead of !=  ( >  , < , = , != , BETWEEEN )
+	 
+
+  what if we want to use || , OR , AND  instead of && ? 
+  
+     $c->get('users' , array('id'=> array('||' , '!=' , '1' ));
+
+  
+  this wil generate 
+  
+  	 || id != 1
+	 
+  again order doesn't matter 
+  we can write 
+	
+     $c->get('users' , array('id'=> array(,'1' , '!=' , '||'  ));
+
+	 
+   what if we want to get users with id in 1,2,3,4,5 
+   
+     $c->get('users' , array('id'=> array(1,2,3,4,5));
+	 
+   this will generate 
+   
+      && id IN (1,2,3,4,5)
+	  
+   OR :
+	  
+     $c->get('users' , array('id'=> array('||' , '!=' , 1,2,3,4,5));
+	 
+   this will generate 
+   
+      || id NOT IN (1,2,3,4,5)
+	  
+	
+   we want to get users who has age > 30 and username = max or name = max 
+   what we want is this query : 
+  
+     where age > 30 && (  username = 'max' || name = 'max' ) 
+	 
+   here is how :
+     
+     $c->get('users' ,  array(
+	 'id'=>array('>' , '1') ,
+	 'username'=>array( '(' , "'max'" ) , 
+	 'name'=>array( '||' ,  "'max'"  , ')' )
+	 ));
+
+   
+--------------------------------------------------------------------------------
+
+
+  
 after each function we can see executed query by :
 
     echo $c->last_query ;
