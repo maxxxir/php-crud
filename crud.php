@@ -32,10 +32,6 @@ class crud{
 		}
 		
 		
-		
-
-
-		
 	
 
 		 public function delete ( $table  ,  $conds = array() ){
@@ -198,12 +194,12 @@ class crud{
 					 foreach($v as $kk=>$vv  )
 					 {
 						 $vv = trim($vv);
-						 if(in_array($vv , array('&&' , '||' , 'and' , 'or' , 'AND' , 'OR')))
+						 if(in_array($vv , array('&&' , '||', 'AND' , 'OR')))
 						 {
 							$type = $vv ;
 							unset($v[$kk]); 
 						 }
-						 else if(in_array($vv , array('=' ,'!=' , '>' , '<' , 'like' , 'LIKE'  , 'BETWEEN', 'between')))
+						 else if(in_array($vv , array('=' ,'!=' , '>' , '<'  , 'LIKE'  , 'BETWEEN')))
 						 {
 							$operatpr = $vv ;
 							unset($v[$kk]); 
@@ -232,16 +228,16 @@ class crud{
 					 {
 						 if(in_array($operatpr  , array('BETWEEN', 'between')))
 						 {
-						   $cond .= "  $k $operatpr $v[0] AND $v[1] ";
+						   $cond .= "  `$k` $operatpr $v[0] AND $v[1] ";
 						 }
 						 else
 						 {
 						   $operatpr = $operatpr == '!=' ? 'NOT IN' : 'IN';
-						   $cond .= "  $k $operatpr (".implode( ',' ,  $v).")";
+						   $cond .= "  `$k` $operatpr (".implode( ',' ,  $v).")";
 						 }
 					 }
 					 else
-					 $cond .= " $k $operatpr '$v[0]' ";
+					 $cond .= " `$k` $operatpr '$v[0]' ";
 					 
 					 if($prt && $prt == 'c' )
 					 $cond .= ')';
@@ -249,7 +245,7 @@ class crud{
 
 				}
 				else
-				$cond .= " $type $k = '$v' ";
+				$cond .= " $type `$k` = '$v' ";
 			}
 			return $cond ;
 		}

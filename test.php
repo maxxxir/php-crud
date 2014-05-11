@@ -8,7 +8,7 @@
 // $c->increment('test' , array('id'=>3) , 'id');
 // echo $c->last_query;
 
- $res = $c->get('test' , array('id'=>array('!=' , '1')) , 0 , 0 , array('id'=>'desc' , 'title'=>'desc'));
+ $res = $c->get('test' , array('id'=>array('BETWEEN' , 1,5)) );
  echo $c->last_query;
  foreach($res as $obj )
  {

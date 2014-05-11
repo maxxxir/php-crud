@@ -148,7 +148,7 @@ this function will return the id of inserted user
       || id NOT IN (1,2,3,4,5)
 	  
 	
-   we want to get users who has age > 30 and username = max or name = max 
+   we want to get users who has id > 30 and username = max or name = max 
    what we want is this query : 
   
      where age > 30 && (  username = 'max' || name = 'max' ) 
@@ -156,12 +156,14 @@ this function will return the id of inserted user
    here is how :
      
      $c->get('users' ,  array(
-	 'id'=>array('>' , '1') ,
-	 'username'=>array( '(' , "'max'" ) , 
-	 'name'=>array( '||' ,  "'max'"  , ')' )
+	 'id'=>array('>' , '30') ,
+	 'username'=>array( '(' , 'max' ) , 
+	 'name'=>array( '||' ,  'max'  , ')' )
 	 ));
 
+   here is list of avalibal operators : 
    
+     array('=' ,'!=' , '>' , '<'  , 'LIKE'  , 'BETWEEN' , '&&' , '||', 'AND' , 'OR')
 --------------------------------------------------------------------------------
 
 

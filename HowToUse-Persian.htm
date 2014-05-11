@@ -451,7 +451,7 @@ dfn , code{
 <div id="content">
 
 
-<h1> mz-crud </h1>
+<h1> php-crud </h1>
 
 <p>مواردی که انجام میدهد :</p>
 
@@ -659,33 +659,163 @@ $users = $c->delete('users' ,  array('username'=>'max')); <br />
 $c = new crud ;<br />
 $users = $c->get('users'  , array('username'=>'max') , 3 , 0 , array('id'=>'asc'));
 <h2 style="text-align:right" dir="rtl">نمایش کاربر های خوانده شده : </h2>
-
-foreach($users as $u)<br />
-
-{<br />
+</code>
+<p><code>
+  foreach($users as $u)<br />
+  
+  {<br />
   echo $u->username ;<br />
   echo $u->tell ;<br />
+  
+  }
+  </code>
+  <br />
+  <br />
+  
+  
+  <strong style="color:#F06">موارد قابل توجه : </strong><code><br />
+    $c-&gt;last_query ;<br />
+    $c-&gt;affected_rows;
+  </code>
+  
+  بعد از اجرای هر تابع میتواندی با اجرای دستورات بالا به ترتیب :
+  <br />
+  
+  آخرین کوئری اجرا شده و 
+  <br />
+  تعداد سطر های تغییر یافته بر ثر آن کوئری <br />
+  را مشاهده کنید 
+  
+  
+  <br />
+  <br />
+  <br />
+  
+  
+  <strong style="color:#F06">شرط دهی پیشرفته : </strong></p>
 
-}
+<br />
+فرض کنیم که میخایم 
+یوزری که آیدی اون برابر با 1 هست ر بخونیم از دیتابیس 
+<p><code><br />
+$c-&gt;get('users' , array('id'=&gt;1));</code></p>
+
+اما اگه بخایم یوزر هایی که آیدی اون بین 1و2و3و4و5 هست رو بخونیم چجوری 
+
+<p><code><br />
+$c-&gt;get('users' , array( 'id' =&gt; array(1,2,3,4,5) ) );</code></p>
+
+
+
+
+اگه بخایم یوزری که آیدی اون مخالف 1 هست رو بخونیم
+<p><code><br />
+$c-&gt;get('users' , array( 'id' =&gt; array( '!=' , 1 ) ) );</code></p>
+
+
+
+اما اگه بخایم یوزر هایی که آیدی اون بین 1و2و3و4و5 <strong>نیست </strong>رو بخونیم چجوری 
+
+<p><code><br />
+$c-&gt;get('users' , array( 'id' =&gt; array( '!=' , 1,2,3,4,5) ) );</code></p>
+
+
+
+
+اگه بخایم کاربری که آیدی اون بزرگتر از 1 هست رو بخونیم 
+<p><code><br />
+$c-&gt;get('users' , array( 'id' =&gt; array('>' , 1 ) ) );</code></p>
+
+
+
+
+تمام دستورات به طور پیشفرض از عملگر && استفاده میکنن برای شرط ها <br />
+اگه بخایم از عملگر || استفاده کنیم :
+
+مثلا میخایم یوزر هایی رو بگیریم که آیدی اونها کوچتر از 5 باشه<strong> یا</strong>   اسمشون ali باشه رو بگیریم
+<p><code><br />
+$c-&gt;get('users' , array( 'id' =&gt; array('&lt;' , 5) , 'username' =&gt; array('||' , 'ali') );</code></p>
+<strong>
+
+<br />
+
+لیست عملگر های موجودی که میتونید استفاده کنید در کوئریتون :
+توجه داشته باشید همه عملگر ها با حروف بزرگ نوشته میشن 
+<br />
+
+<p><code>
+
+ =<br />
+!=<br />><br /><<br />
+LIKE<br />
+BETWEEN<br />&&<br />||<br />
+AND<br />OR
+ 
 </code>
+</p><br />
+
+
+
+ توجه داشته باشید که ترتیب داده ها و عملگر ها مهم نیست 
+
+
+</strong>
+<p><code><br />
+$c-&gt;get('users' , array( 'id' =&gt; array(  1,2,3,4,5 , '!=' ) ) );
+
+<br />
+<br />
+
+$c-&gt;get('users' , array( 'id' =&gt; array( '!=' , 1,2,3,4,5) ) );
+
 <br />
 <br />
 
 
-<strong style="color:#F06">موارد قابل توجه : </strong><code><br />
-$c-&gt;last_query ;<br />
-$c-&gt;affected_rows;
-</code>
+$c-&gt;get('users' , array( 'id' =&gt; array( 1,2,'!=' ,3,4,5) ) );
 
-بعد از اجرای هر تابع میتواندی با اجرای دستورات بالا به ترتیب :
+
+
+
+</code></p>
+<strong>
+ هر 3 مورد بالا صحیح هستن و یک کار رو انجام میدن
+
+</strong>
+
+<br />
 <br />
 
-آخرین کوئری اجرا شده و 
+
+
+پیچیده ترین حالت وقتیه که نیاز به پرانتز باشه در شرط کوئری<br />
+ 
+مثلا میخایم کاربر هایی رو بخونیم که آیدی اونها بزرگتر از 30 هستش <br />
+
+یا اینکه  یوزرنیمشون ali هست یا نامشون ali هست
+
+کوئری ما باید به این شکل در بیاد 
+
+
+
 <br />
-تعداد سطر های تغییر یافته بر ثر آن کوئری <br />
-را مشاهده کنید 
+ where id > 30 && (  username = 'ali' || name = 'ali' )  </code></p>
+
+اینجوری میشه :<br />
 
 
+<p><code><br />
+
+ $c->get('users' ,  array(<br />
+
+ 'id' => array('>' , '30') ,<br />
+
+ 'username' => array( '(' , 'ali' ) , <br />
+
+ 'name' => array( '||' ,  'ali'  , ')' )<br />
+
+ ));
+ </code></p>
 
 
 </div>

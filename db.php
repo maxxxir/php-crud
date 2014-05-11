@@ -4,12 +4,12 @@
     }
 
 
-
+///////////////// DATABASE CONFIG ///////////////////////////////
 defined('DB_SERVER') ? null : define("DB_SERVER", "server_here");
 defined('DB_USER')   ? null : define("DB_USER", "username_here");
 defined('DB_PASS')   ? null : define("DB_PASS", "password_here");
 defined('DB_NAME')   ? null : define("DB_NAME", "tableName_here");
-/////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////
 
 
 
