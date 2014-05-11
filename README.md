@@ -1,4 +1,4 @@
-maz-crud
+php-crud by maxxxir@gmail.com
 ========
 
 simple but powerful crud system
