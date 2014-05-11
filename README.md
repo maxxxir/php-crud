@@ -92,7 +92,7 @@ this function will return the id of inserted user
 
   lets say you to get user with id = 1 
   
-  $c->get('users' , array('id'=>1));
+     $c->get('users' , array('id'=>1));
   
   by default this will generate 
     
@@ -113,8 +113,6 @@ this function will return the id of inserted user
 	 
   will generate the same result and this goes for all examples  
   
-  we can use any standard operators instead of !=  ( >  , < , = , != , BETWEEEN )
-	 
 
   what if we want to use || , OR , AND  instead of && ? 
   
@@ -124,6 +122,12 @@ this function will return the id of inserted user
   this wil generate 
   
   	 || id != 1
+	 
+	 
+	 
+  here is list of avalibal operators : 
+   
+     array('=' ,'!=' , '>' , '<'  , 'LIKE'  , 'BETWEEN' , '&&' , '||', 'AND' , 'OR')
 	 
   again order doesn't matter 
   we can write 
@@ -161,9 +165,6 @@ this function will return the id of inserted user
 	 'name'=>array( '||' ,  'max'  , ')' )
 	 ));
 
-   here is list of avalibal operators : 
-   
-     array('=' ,'!=' , '>' , '<'  , 'LIKE'  , 'BETWEEN' , '&&' , '||', 'AND' , 'OR')
 --------------------------------------------------------------------------------
 
 
