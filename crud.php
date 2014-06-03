@@ -23,10 +23,8 @@ class crud{
 			 $sql .=" LIMIT $limit OFFSET $offset ";
 			 
 			
-           echo  $this->last_query = $sql;
-		   
-		   echo '<br />';
-			$records = $this->db->query($sql);
+            $this->last_query = $sql;
+			$records          = $this->db->query($sql);
 
 			return $this->return_objrct_array($records);
 		}
